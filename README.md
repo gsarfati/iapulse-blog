@@ -27,3 +27,8 @@ actual admin test url : gamers-cv/blog-iapulse/wp-login
 default admin login : login -> admin password -> admin
 
 autor test user : login -> test password -> test
+
+
+# IMPORTANT
+
+For deploy it on your server don't forget to change wp-config.php with your own database information !
