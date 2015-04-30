@@ -281,7 +281,7 @@ addLoadEvent(function(){ var p=new Array(15,30,15,0,-15,-30,-15,0);p=p.concat(p.
 
 function wp_login_viewport_meta() {
 	?>
-	<meta name="viewport" content="width=device-width" style="color:black"/>
+	<meta name="viewport" content="width=device-width" style="color:white"/>
 	<?php
 }
 
@@ -592,8 +592,8 @@ case 'retrievepassword' :
 
 
 
-<p id="nav" style="color:black">
-<a style="color:white" style="color:black" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e('Log in') ?></a>
+<p id="nav" style="color:white">
+<a style="color:white" style="color:white" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e('Log in') ?></a>
 <?php
 if ( get_option( 'users_can_register' ) ) :
 $registration_url = sprintf( '<a style="color:white" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
@@ -697,7 +697,7 @@ do_action( 'resetpass_form', $user );
 <p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Reset Password'); ?>" /></p>
 </form>
 
-<p id="nav">
+<p id="nav" style="color:white">
 <a style="color:white" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a>
 <?php
 if ( get_option( 'users_can_register' ) ) :
@@ -779,7 +779,7 @@ do_action( 'register_form' );
 <p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Register'); ?>" /></p>
 </form>
 
-<p id="nav">
+<p id="nav" style="color:white">
 <a style="color:white" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a> |
 <a style="color:white" href="<?php echo esc_url( wp_lostpassword_url() ); ?>" title="<?php esc_attr_e( 'Password Lost and Found' ) ?>"><?php _e( 'Lost your password?' ); ?></a>
 </p>
@@ -955,7 +955,7 @@ default:
 </form>
 
 <?php if ( ! $interim_login ) { ?>
-<p id="nav" style="color:black">
+<p id="nav" style="color:white">
 <?php if ( ! isset( $_GET['checkemail'] ) || ! in_array( $_GET['checkemail'], array( 'confirm', 'newpass' ) ) ) :
 	if ( get_option( 'users_can_register' ) ) :
 		$registration_url = sprintf( '<a style="color:white" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
