@@ -1,0 +1,15 @@
+Compass
+http://www.wpzoom.com/themes/compass
+
+CHANGELOG
+---------
+
+v 1.1 (April 2, 2015)
+
+    - Social widget removed in favour of new plugins: http://www.wpzoom.com/plugins/
+    - Minor modifications in the structure of theme folders and files
+
+
+v 1.0 (February 17, 2015)
+
+	- initial release
