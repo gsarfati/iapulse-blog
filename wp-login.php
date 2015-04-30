@@ -240,7 +240,7 @@ function login_footer($input_id = '') {
 
 	// Don't allow interim logins to navigate away from the page.
 	if ( ! $interim_login ): ?>
-	<p id="backtoblog"><a style="color:black" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php esc_attr_e( 'Are you lost?' ); ?>">← Retour sur IA-pulse</a></p>
+	<p id="backtoblog"><a style="color:white" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php esc_attr_e( 'Are you lost?' ); ?>">← Retour sur IA-pulse</a></p>
 	<?php endif; ?>
 
 	</div>
@@ -593,13 +593,13 @@ case 'retrievepassword' :
 
 
 <p id="nav" style="color:black">
-<a style="color:black" style="color:black" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e('Log in') ?></a>
+<a style="color:white" style="color:black" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e('Log in') ?></a>
 <?php
 if ( get_option( 'users_can_register' ) ) :
-	$registration_url = sprintf( '<a style="color:black" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
+$registration_url = sprintf( '<a style="color:white" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
 
-	/** This filter is documented in wp-includes/general-template.php */
-	echo ' | ' . apply_filters( 'register', $registration_url );
+/** This filter is documented in wp-includes/general-template.php */
+echo ' | ' . apply_filters( 'register', $registration_url );
 endif;
 ?>
 </p>
@@ -610,53 +610,53 @@ break;
 
 case 'resetpass' :
 case 'rp' :
-	list( $rp_path ) = explode( '?', wp_unslash( $_SERVER['REQUEST_URI'] ) );
-	$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
-	if ( isset( $_GET['key'] ) ) {
-		$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );
-		setcookie( $rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
-		wp_safe_redirect( remove_query_arg( array( 'key', 'login' ) ) );
-		exit;
-	}
+list( $rp_path ) = explode( '?', wp_unslash( $_SERVER['REQUEST_URI'] ) );
+$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
+if ( isset( $_GET['key'] ) ) {
+	$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );
+	setcookie( $rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
+	wp_safe_redirect( remove_query_arg( array( 'key', 'login' ) ) );
+	exit;
+}
 
-	if ( isset( $_COOKIE[ $rp_cookie ] ) && 0 < strpos( $_COOKIE[ $rp_cookie ], ':' ) ) {
-		list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_COOKIE[ $rp_cookie ] ), 2 );
-		$user = check_password_reset_key( $rp_key, $rp_login );
-		if ( isset( $_POST['pass1'] ) && ! hash_equals( $rp_key, $_POST['rp_key'] ) ) {
-			$user = false;
-		}
-	} else {
+if ( isset( $_COOKIE[ $rp_cookie ] ) && 0 < strpos( $_COOKIE[ $rp_cookie ], ':' ) ) {
+	list( $rp_login, $rp_key ) = explode( ':', wp_unslash( $_COOKIE[ $rp_cookie ] ), 2 );
+	$user = check_password_reset_key( $rp_key, $rp_login );
+	if ( isset( $_POST['pass1'] ) && ! hash_equals( $rp_key, $_POST['rp_key'] ) ) {
 		$user = false;
 	}
+} else {
+	$user = false;
+}
 
-	if ( ! $user || is_wp_error( $user ) ) {
-		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
-		if ( $user && $user->get_error_code() === 'expired_key' )
-			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
-		else
-			wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=invalidkey' ) );
-		exit;
-	}
+if ( ! $user || is_wp_error( $user ) ) {
+	setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
+	if ( $user && $user->get_error_code() === 'expired_key' )
+		wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=expiredkey' ) );
+	else
+		wp_redirect( site_url( 'wp-login.php?action=lostpassword&error=invalidkey' ) );
+	exit;
+}
 
-	$errors = new WP_Error();
+$errors = new WP_Error();
 
-	if ( isset($_POST['pass1']) && $_POST['pass1'] != $_POST['pass2'] )
-		$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
+if ( isset($_POST['pass1']) && $_POST['pass1'] != $_POST['pass2'] )
+	$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
 
-	/**
-	 * Fires before the password reset procedure is validated.
-	 *
-	 * @since 3.5.0
-	 *
-	 * @param object           $errors WP Error object.
-	 * @param WP_User|WP_Error $user   WP_User object if the login and reset key match. WP_Error object otherwise.
-	 */
-	do_action( 'validate_password_reset', $errors, $user );
+/**
+ * Fires before the password reset procedure is validated.
+ *
+ * @since 3.5.0
+ *
+ * @param object           $errors WP Error object.
+ * @param WP_User|WP_Error $user   WP_User object if the login and reset key match. WP_Error object otherwise.
+ */
+do_action( 'validate_password_reset', $errors, $user );
 
-	if ( ( ! $errors->get_error_code() ) && isset( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
-		reset_password($user, $_POST['pass1']);
-		setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
-		login_header( __( 'Password Reset' ), '<p class="message reset-pass">' . __( 'Your password has been reset.' ) . ' <a style="color:black" href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
+if ( ( ! $errors->get_error_code() ) && isset( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
+	reset_password($user, $_POST['pass1']);
+	setcookie( $rp_cookie, ' ', time() - YEAR_IN_SECONDS, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
+	login_header( __( 'Password Reset' ), '<p class="message reset-pass">' . __( 'Your password has been reset.' ) . ' <a style="color:white" href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
 		login_footer();
 		exit;
 	}
@@ -698,13 +698,13 @@ do_action( 'resetpass_form', $user );
 </form>
 
 <p id="nav">
-<a style="color:black" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a>
+<a style="color:white" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a>
 <?php
 if ( get_option( 'users_can_register' ) ) :
-	$registration_url = sprintf( '<a style="color:black" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
+$registration_url = sprintf( '<a style="color:white" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
 
-	/** This filter is documented in wp-includes/general-template.php */
-	echo ' | ' . apply_filters( 'register', $registration_url );
+/** This filter is documented in wp-includes/general-template.php */
+echo ' | ' . apply_filters( 'register', $registration_url );
 endif;
 ?>
 </p>
@@ -714,74 +714,74 @@ login_footer('user_pass');
 break;
 
 case 'register' :
-	if ( is_multisite() ) {
-		/**
-		 * Filter the Multisite sign up URL.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param string $sign_up_url The sign up URL.
-		 */
-		wp_redirect( apply_filters( 'wp_signup_location', network_site_url( 'wp-signup.php' ) ) );
-		exit;
-	}
-
-	if ( !get_option('users_can_register') ) {
-		wp_redirect( site_url('wp-login.php?registration=disabled') );
-		exit();
-	}
-
-	$user_login = '';
-	$user_email = '';
-	if ( $http_post ) {
-		$user_login = $_POST['user_login'];
-		$user_email = $_POST['user_email'];
-		$errors = register_new_user($user_login, $user_email);
-		if ( !is_wp_error($errors) ) {
-			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
-			wp_safe_redirect( $redirect_to );
-			exit();
-		}
-	}
-
-	$registration_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+if ( is_multisite() ) {
 	/**
-	 * Filter the registration redirect URL.
+	 * Filter the Multisite sign up URL.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $registration_redirect The redirect destination URL.
+	 * @param string $sign_up_url The sign up URL.
 	 */
-	$redirect_to = apply_filters( 'registration_redirect', $registration_redirect );
-	login_header(__('Registration Form'), '<p class="message register">' . __('Register For This Site') . '</p>', $errors);
+	wp_redirect( apply_filters( 'wp_signup_location', network_site_url( 'wp-signup.php' ) ) );
+	exit;
+}
+
+if ( !get_option('users_can_register') ) {
+	wp_redirect( site_url('wp-login.php?registration=disabled') );
+	exit();
+}
+
+$user_login = '';
+$user_email = '';
+if ( $http_post ) {
+	$user_login = $_POST['user_login'];
+	$user_email = $_POST['user_email'];
+	$errors = register_new_user($user_login, $user_email);
+	if ( !is_wp_error($errors) ) {
+		$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
+		wp_safe_redirect( $redirect_to );
+		exit();
+	}
+}
+
+$registration_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+/**
+ * Filter the registration redirect URL.
+ *
+ * @since 3.0.0
+ *
+ * @param string $registration_redirect The redirect destination URL.
+ */
+$redirect_to = apply_filters( 'registration_redirect', $registration_redirect );
+login_header(__('Registration Form'), '<p class="message register">' . __('Register For This Site') . '</p>', $errors);
 ?>
 
 <form name="registerform" id="registerform" action="<?php echo esc_url( site_url('wp-login.php?action=register', 'login_post') ); ?>" method="post" novalidate="novalidate">
-	<p>
-		<label for="user_login"><?php _e('Username') ?><br />
-		<input type="text" name="user_login" id="user_login" class="input" value="<?php echo esc_attr(wp_unslash($user_login)); ?>" size="20" /></label>
-	</p>
-	<p>
-		<label for="user_email"><?php _e('E-mail') ?><br />
-		<input type="email" name="user_email" id="user_email" class="input" value="<?php echo esc_attr( wp_unslash( $user_email ) ); ?>" size="25" /></label>
-	</p>
-	<?php
-	/**
-	 * Fires following the 'E-mail' field in the user registration form.
-	 *
-	 * @since 2.1.0
-	 */
-	do_action( 'register_form' );
-	?>
-	<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
-	<br class="clear" />
-	<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
-	<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Register'); ?>" /></p>
+<p>
+	<label for="user_login"><?php _e('Username') ?><br />
+	<input type="text" name="user_login" id="user_login" class="input" value="<?php echo esc_attr(wp_unslash($user_login)); ?>" size="20" /></label>
+</p>
+<p>
+	<label for="user_email"><?php _e('E-mail') ?><br />
+	<input type="email" name="user_email" id="user_email" class="input" value="<?php echo esc_attr( wp_unslash( $user_email ) ); ?>" size="25" /></label>
+</p>
+<?php
+/**
+ * Fires following the 'E-mail' field in the user registration form.
+ *
+ * @since 2.1.0
+ */
+do_action( 'register_form' );
+?>
+<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
+<br class="clear" />
+<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
+<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Register'); ?>" /></p>
 </form>
 
 <p id="nav">
-<a style="color:black" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a> |
-<a style="color:black" href="<?php echo esc_url( wp_lostpassword_url() ); ?>" title="<?php esc_attr_e( 'Password Lost and Found' ) ?>"><?php _e( 'Lost your password?' ); ?></a>
+<a style="color:white" href="<?php echo esc_url( wp_login_url() ); ?>"><?php _e( 'Log in' ); ?></a> |
+<a style="color:white" href="<?php echo esc_url( wp_lostpassword_url() ); ?>" title="<?php esc_attr_e( 'Password Lost and Found' ) ?>"><?php _e( 'Lost your password?' ); ?></a>
 </p>
 
 <?php
@@ -821,11 +821,11 @@ default:
 
 	if ( empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) ) {
 		if ( headers_sent() ) {
-			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a style="color:black" href="%1$s">this documentation</a> or try the <a style="color:black" href="%2$s">support forums</a>.' ),
+			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For help, please see <a style="color:white" href="%1$s">this documentation</a> or try the <a style="color:white" href="%2$s">support forums</a>.' ),
 				__( 'https://codex.wordpress.org/Cookies' ), __( 'https://wordpress.org/support/' ) ) );
 		} elseif ( isset( $_POST['testcookie'] ) && empty( $_COOKIE[ TEST_COOKIE ] ) ) {
 			// If cookies are disabled we can't log in even with a valid user+pass
-			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a style="color:black" href="%s">enable cookies</a> to use WordPress.' ),
+			$user = new WP_Error( 'test_cookie', sprintf( __( '<strong>ERROR</strong>: Cookies are blocked or not supported by your browser. You must <a style="color:white" href="%s">enable cookies</a> to use WordPress.' ),
 				__( 'https://codex.wordpress.org/Cookies' ) ) );
 		}
 	}
@@ -958,13 +958,13 @@ default:
 <p id="nav" style="color:black">
 <?php if ( ! isset( $_GET['checkemail'] ) || ! in_array( $_GET['checkemail'], array( 'confirm', 'newpass' ) ) ) :
 	if ( get_option( 'users_can_register' ) ) :
-		$registration_url = sprintf( '<a style="color:black" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
+		$registration_url = sprintf( '<a style="color:white" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
 
 		/** This filter is documented in wp-includes/general-template.php */
 		echo apply_filters( 'register', $registration_url ) . ' | ';
 	endif;
 	?>
-	<a style="color:black" href="<?php echo esc_url( wp_lostpassword_url() ); ?>" title="<?php esc_attr_e( 'Password Lost and Found' ); ?>"><?php _e( 'Lost your password?' ); ?></a>
+	<a style="color:white" href="<?php echo esc_url( wp_lostpassword_url() ); ?>" title="<?php esc_attr_e( 'Password Lost and Found' ); ?>"><?php _e( 'Lost your password?' ); ?></a>
 <?php endif; ?>
 </p>
 <?php } ?>
